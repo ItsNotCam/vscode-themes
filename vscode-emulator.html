@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSCode Theme Creator</title>
+<style>
+  :root {
+    /* WORKBENCH COLORS — official VSCode color keys from dark_vs.json + dark_plus.json */
+    --editor-background: #1e1e1e;
+    --editor-foreground: #d4d4d4;
+    --editor-selectionBackground: #264f78;
+    --editor-lineHighlightBackground: #2a2d2e;
+    --editorLineNumber-foreground: #858585;
+    --editorLineNumber-activeForeground: #c6c6c6;
+    --editorCursor-foreground: #aeafad;
+    --titleBar-activeBackground: #3c3c3c;
+    --titleBar-activeForeground: #cccccc;
+    --activityBar-background: #333333;
+    --activityBar-foreground: #ffffff;
+    --activityBar-inactiveForeground: #ffffff99;
+    --activityBar-activeBorder: #ffffff;
+    --activityBarBadge-background: #007acc;
+    --sideBar-background: #252526;
+    --sideBar-foreground: #cccccc;
+    --sideBarTitle-foreground: #bbbbbb;
+    --sideBarSectionHeader-foreground: #bbbbbb;
+    --list-activeSelectionBackground: #2a2d2e;
+    --list-activeSelectionForeground: #ffffff;
+    --list-hoverBackground: #2a2d2e;
+    --editorGroupHeader-tabsBackground: #252526;
+    --tab-activeBackground: #1e1e1e;
+    --tab-activeForeground: #ffffff;
+    --tab-inactiveBackground: #2d2d2d;
+    --tab-inactiveForeground: #969696;
+    --tab-border: #252526;
+    --tab-selectedBackground: #222222;
+    --breadcrumb-foreground: #a0a0a0;
+    --panel-border: #80808059;
+    --panelTitle-activeForeground: #e7e7e7;
+    --panelTitle-inactiveForeground: #969696;
+    --panelTitle-activeBorder: #e7e7e7;
+    --terminal-foreground: #cccccc;
+    --terminal-background: #1e1e1e;
+    --terminal-ansiGreen: #6a9955;
+    --terminal-ansiBlue: #569cd6;
+    --terminal-ansiYellow: #dcdcaa;
+    --terminal-ansiRed: #f14c4c;
+    --terminal-ansiCyan: #4ec9b0;
+    --terminal-ansiBrightBlack: #666666;
+    --statusBar-background: #007acc;
+    --statusBar-foreground: #ffffff;
+    --minimap-background: #1e1e1e;
+    --scrollbarSlider-background: #79797966;
+    --scrollbarSlider-hoverBackground: #646464b3;
+    --foreground: #cccccc;
+    --menu-background: #252526;
+    --focusBorder: #007fd4;
+
+    /* TOKEN COLORS — TextMate scopes from dark_vs.json + dark_plus.json */
+    --token-foreground: #d4d4d4;                  /* default */
+    --token-comment: #6a9955;                      /* comment */
+    --token-keyword: #569cd6;                      /* keyword, storage, storage.type */
+    --token-control: #c586c0;                      /* keyword.control */
+    --token-string: #ce9178;                       /* string */
+    --token-number: #b5cea8;                       /* constant.numeric */
+    --token-function: #dcdcaa;                     /* entity.name.function, support.function */
+    --token-type: #4ec9b0;                         /* support.class, entity.name.type */
+    --token-variable: #9cdcfe;                     /* variable */
+    --token-parameter: #9cdcfe;                    /* variable.parameter */
+    --token-property: #9cdcfe;                     /* meta.object-literal.key */
+    --token-constant: #4fc1ff;                     /* variable.other.constant */
+    --token-constantLanguage: #569cd6;             /* constant.language */
+    --token-operator: #d4d4d4;                     /* keyword.operator */
+    --token-punctuation: #d4d4d4;                  /* punctuation */
+    --token-tag: #569cd6;                          /* entity.name.tag */
+    --token-decorator: #dcdcaa;                    /* meta.decorator */
+    --token-builtin: #dcdcaa;                      /* support.function.builtin */
+    --token-variableLanguage: #569cd6;             /* variable.language */
+    --token-envKey: #9cdcfe;
+    --token-envValue: #ce9178;
+    --token-yamlKey: #9cdcfe;
+    --token-jsonKey: #9cdcfe;
+
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, sans-serif;
+    --font-code: 'Cascadia Code', 'Fira Code', Menlo, Monaco, 'Courier New', monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:var(--font-ui); background:var(--editor-background); color:var(--foreground); height:100vh; overflow:hidden; font-size:13px; }
+  .vscode { display:flex; flex-direction:column; height:100vh; }
+  .titlebar { background:var(--titleBar-activeBackground); height:30px; display:flex; align-items:center; padding:0 12px; font-size:12px; color:var(--titleBar-activeForeground); flex-shrink:0; justify-content:center; position:relative; }
+  .titlebar-dots { position:absolute; left:12px; display:flex; gap:8px; }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .dot.r{background:#ff5f57} .dot.y{background:#febc2e} .dot.g{background:#28c840}
+  .main { display:flex; flex:1; overflow:hidden; }
+  .activitybar { width:48px; background:var(--activityBar-background); display:flex; flex-direction:column; align-items:center; padding-top:4px; flex-shrink:0; }
+  .ai { width:48px; height:48px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--activityBar-inactiveForeground); position:relative; }
+  .ai.active { color:var(--activityBar-foreground); }
+  .ai.active::before { content:''; position:absolute; left:0; top:6px; bottom:6px; width:2px; background:var(--activityBar-activeBorder); }
+  .ai svg { width:24px; height:24px; }
+  .sidebar { width:240px; background:var(--sideBar-background); display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+  .sidebar-hdr { padding:10px 20px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--sideBarSectionHeader-foreground); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+  .tree { font-size:13px; line-height:22px; }
+  .ti { display:flex; align-items:center; padding-right:8px; cursor:pointer; white-space:nowrap; color:var(--sideBar-foreground); height:22px; }
+  .ti:hover { background:var(--list-hoverBackground); }
+  .ti.active { background:var(--list-activeSelectionBackground); color:var(--list-activeSelectionForeground); }
+  .ti-icon { width:16px; height:16px; flex-shrink:0; margin-right:4px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; font-family:var(--font-code); }
+  .editor-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  .tab-bar { display:flex; background:var(--editorGroupHeader-tabsBackground); height:35px; flex-shrink:0; overflow-x:auto; }
+  .tab { display:flex; align-items:center; padding:0 12px; height:35px; font-size:13px; cursor:pointer; border-right:1px solid var(--tab-border); white-space:nowrap; gap:6px; flex-shrink:0; color:var(--tab-inactiveForeground); background:var(--tab-inactiveBackground); }
+  .tab.active { background:var(--tab-activeBackground); color:var(--tab-activeForeground); border-bottom:1px solid var(--tab-activeBackground); margin-bottom:-1px; }
+  .tab-icon { width:14px; height:14px; flex-shrink:0; font-size:10px; font-weight:bold; font-family:var(--font-code); display:flex; align-items:center; justify-content:center; }
+  .tab-close { width:16px; height:16px; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--tab-inactiveForeground); border-radius:3px; margin-left:4px; }
+  .tab.active .tab-close { color:var(--tab-activeForeground); }
+  .bc { padding:3px 16px; font-size:12px; color:var(--breadcrumb-foreground); background:var(--editor-background); display:flex; align-items:center; gap:4px; flex-shrink:0; }
+  .bc-sep { opacity:0.5; }
+  .ew { flex:1; display:flex; overflow:hidden; }
+  .es { flex:1; overflow:auto; }
+  .code { display:table; width:100%; font-family:var(--font-code); font-size:13px; line-height:20px; padding:4px 0; }
+  .cl { display:table-row; height:20px; }
+  .cl.cur { background:var(--editor-lineHighlightBackground); }
+  .ln { display:table-cell; text-align:right; padding-right:16px; padding-left:20px; color:var(--editorLineNumber-foreground); user-select:none; width:60px; font-family:var(--font-code); font-size:13px; vertical-align:top; }
+  .cl.cur .ln { color:var(--editorLineNumber-activeForeground); }
+  .lc { display:table-cell; padding-right:30px; white-space:pre; font-family:var(--font-code); font-size:13px; color:var(--token-foreground); vertical-align:top; }
+  .mm { width:60px; background:var(--minimap-background); flex-shrink:0; overflow:hidden; }
+  .mm-l { height:3px; margin:0 8px 0 12px; border-radius:1px; opacity:0.4; }
+  .panel { border-top:1px solid var(--panel-border); display:flex; flex-direction:column; flex-shrink:0; }
+  .panel-tabs { display:flex; background:var(--sideBar-background); height:35px; align-items:center; padding:0 12px; }
+  .pt { padding:0 12px; height:35px; display:flex; align-items:center; font-size:12px; color:var(--panelTitle-inactiveForeground); cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid transparent; margin-bottom:-1px; }
+  .pt.active { color:var(--panelTitle-activeForeground); border-bottom-color:var(--panelTitle-activeBorder); }
+  .term { background:var(--terminal-background); padding:8px 16px; font-family:var(--font-code); font-size:12px; color:var(--terminal-foreground); line-height:18px; height:140px; overflow-y:auto; }
+  .tp{color:var(--terminal-ansiGreen)} .tb{color:var(--terminal-ansiBlue)} .tc{color:var(--terminal-ansiYellow)} .tok{color:var(--terminal-ansiCyan)} .tw{color:#cca700} .te{color:var(--terminal-ansiRed)} .td{color:var(--terminal-ansiBrightBlack)}
+  .cur-blink { display:inline-block; width:7px; height:14px; background:var(--editorCursor-foreground); animation:blink 1s step-end infinite; vertical-align:text-bottom; margin-left:2px; }
+  @keyframes blink{50%{opacity:0}}
+  .statusbar { height:22px; background:var(--statusBar-background); display:flex; align-items:center; padding:0 10px; font-size:12px; color:var(--statusBar-foreground); flex-shrink:0; justify-content:space-between; }
+  .sl,.sr { display:flex; align-items:center; gap:14px; }
+  .si { display:flex; align-items:center; gap:4px; font-size:11px; }
+
+  /* SYNTAX TOKEN CLASSES — TextMate scope aligned */
+  .tok-comment{color:var(--token-comment);font-style:italic}
+  .tok-keyword{color:var(--token-keyword)}
+  .tok-control{color:var(--token-control)}
+  .tok-string{color:var(--token-string)}
+  .tok-number{color:var(--token-number)}
+  .tok-function{color:var(--token-function)}
+  .tok-type{color:var(--token-type)}
+  .tok-variable{color:var(--token-variable)}
+  .tok-parameter{color:var(--token-parameter)}
+  .tok-property{color:var(--token-property)}
+  .tok-constant{color:var(--token-constant)}
+  .tok-constantLanguage{color:var(--token-constantLanguage)}
+  .tok-operator{color:var(--token-operator)}
+  .tok-punctuation{color:var(--token-punctuation)}
+  .tok-tag{color:var(--token-tag)}
+  .tok-decorator{color:var(--token-decorator)}
+  .tok-builtin{color:var(--token-builtin)}
+  .tok-variableLanguage{color:var(--token-variableLanguage)}
+  .tok-plain{color:var(--token-foreground)}
+  .tok-envKey{color:var(--token-envKey)}
+  .tok-envValue{color:var(--token-envValue)}
+  .tok-key{color:var(--token-yamlKey)}
+
+  /* THEME EDITOR PANEL */
+  .theme-editor { display:none; font-size:12px; overflow-y:auto; flex:1; }
+  .theme-editor.visible { display:block; }
+  .te-section { border-bottom:1px solid var(--panel-border); }
+  .te-section-hdr { display:flex; align-items:center; padding:6px 12px; cursor:pointer; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--sideBarSectionHeader-foreground); user-select:none; gap:4px; }
+  .te-section-hdr:hover { background:var(--list-hoverBackground); }
+  .te-section-hdr .chevron { font-size:10px; transition:transform 0.15s; display:inline-block; width:12px; }
+  .te-section-hdr .chevron.collapsed { transform:rotate(-90deg); }
+  .te-section-body { padding:2px 0; }
+  .te-section-body.collapsed { display:none; }
+  .te-row { display:flex; align-items:center; padding:2px 12px; gap:6px; height:26px; }
+  .te-row:hover { background:var(--list-hoverBackground); }
+  .te-label { flex:1; font-size:11px; color:var(--sideBar-foreground); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  .te-color-input { width:22px; height:22px; border:1px solid var(--panel-border); border-radius:3px; cursor:pointer; padding:0; background:none; -webkit-appearance:none; appearance:none; flex-shrink:0; }
+  .te-color-input::-webkit-color-swatch-wrapper { padding:1px; }
+  .te-color-input::-webkit-color-swatch { border:none; border-radius:2px; }
+  .te-color-input::-moz-color-swatch { border:none; border-radius:2px; }
+  .te-hex { width:68px; font-family:var(--font-code); font-size:10px; background:var(--editor-background); color:var(--editor-foreground); border:1px solid var(--panel-border); border-radius:3px; padding:2px 4px; text-align:center; flex-shrink:0; }
+  .te-hex:focus { outline:1px solid var(--focusBorder); border-color:var(--focusBorder); }
+  .te-reset { width:16px; height:16px; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--sideBar-foreground); opacity:0.4; cursor:pointer; border-radius:3px; flex-shrink:0; }
+  .te-reset:hover { opacity:1; background:var(--list-hoverBackground); }
+  .te-toolbar { padding:8px 12px; border-bottom:1px solid var(--panel-border); display:flex; gap:6px; }
+  .te-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:4px; padding:4px 8px; font-family:var(--font-ui); font-size:11px; font-weight:600; border:none; border-radius:3px; cursor:pointer; color:var(--statusBar-foreground); background:var(--activityBarBadge-background); letter-spacing:0.3px; }
+  .te-btn:hover { filter:brightness(1.15); }
+  .te-btn.secondary { background:var(--editor-background); color:var(--sideBar-foreground); border:1px solid var(--panel-border); }
+  .te-btn.secondary:hover { background:var(--list-hoverBackground); }
+
+  /* SETTINGS PANEL */
+  .settings-panel { display:none; font-size:12px; overflow-y:auto; flex:1; padding:8px 12px; }
+  .settings-panel.visible { display:flex; flex-direction:column; gap:12px; }
+  .sp-group { display:flex; flex-direction:column; gap:6px; }
+  .sp-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--sideBarSectionHeader-foreground); }
+  .sp-sublabel { font-size:11px; color:var(--sideBar-foreground); }
+  .sp-radios { display:flex; gap:4px; }
+  .sp-radio { flex:1; padding:6px 8px; font-family:var(--font-ui); font-size:11px; border:1px solid var(--panel-border); border-radius:3px; background:var(--editor-background); color:var(--sideBar-foreground); cursor:pointer; text-align:center; transition:all 0.15s; }
+  .sp-radio.active { background:var(--activityBarBadge-background); color:var(--statusBar-foreground); border-color:var(--activityBarBadge-background); }
+  .sp-input { width:100%; padding:5px 8px; font-family:var(--font-code); font-size:11px; background:var(--editor-background); color:var(--editor-foreground); border:1px solid var(--panel-border); border-radius:3px; outline:none; }
+  .sp-input:focus { border-color:var(--focusBorder); }
+  .sp-input::placeholder { color:var(--editorLineNumber-foreground); }
+  .sp-select { width:100%; padding:5px 8px; font-family:var(--font-code); font-size:11px; background:var(--editor-background); color:var(--editor-foreground); border:1px solid var(--panel-border); border-radius:3px; outline:none; -webkit-appearance:none; appearance:none; }
+  .sp-select:focus { border-color:var(--focusBorder); }
+  .sp-status { font-size:11px; padding:6px 8px; border-radius:3px; }
+  .sp-status.ok { background:#16825d22; color:#4ec9b0; }
+  .sp-status.err { background:#f14c4c22; color:#f14c4c; }
+  .sp-status.wait { background:#dcdcaa22; color:#dcdcaa; }
+
+  /* CHAT PANEL */
+  .chat-panel { display:none; font-size:12px; flex:1; flex-direction:column; overflow:hidden; }
+  .chat-panel.visible { display:flex; }
+  .chat-messages { flex:1; overflow-y:auto; padding:8px 10px; display:flex; flex-direction:column; gap:8px; }
+  .chat-msg { padding:6px 10px; border-radius:6px; font-size:12px; line-height:1.5; word-wrap:break-word; max-width:100%; }
+  .chat-msg.user { background:var(--activityBarBadge-background); color:var(--statusBar-foreground); align-self:flex-end; border-bottom-right-radius:2px; }
+  .chat-msg.assistant { background:var(--editor-background); color:var(--editor-foreground); border:1px solid var(--panel-border); align-self:flex-start; border-bottom-left-radius:2px; }
+  .chat-msg.system { background:transparent; color:var(--editorLineNumber-foreground); font-style:italic; text-align:center; font-size:11px; align-self:center; }
+  .chat-msg.applied { border-left:3px solid #4ec9b0; }
+  .chat-input-row { display:flex; gap:4px; padding:8px 10px; border-top:1px solid var(--panel-border); flex-shrink:0; }
+  .chat-input { flex:1; padding:6px 8px; font-family:var(--font-ui); font-size:12px; background:var(--editor-background); color:var(--editor-foreground); border:1px solid var(--panel-border); border-radius:4px; outline:none; resize:none; min-height:32px; max-height:80px; }
+  .chat-input:focus { border-color:var(--focusBorder); }
+  .chat-input::placeholder { color:var(--editorLineNumber-foreground); }
+  .chat-send { width:32px; height:32px; border:none; border-radius:4px; background:var(--activityBarBadge-background); color:var(--statusBar-foreground); cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; align-self:flex-end; }
+  .chat-send:hover { filter:brightness(1.15); }
+  .chat-send:disabled { opacity:0.4; cursor:not-allowed; filter:none; }
+  .chat-no-config { padding:16px 12px; text-align:center; color:var(--editorLineNumber-foreground); font-size:11px; line-height:1.6; }
+
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--scrollbarSlider-background);border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--scrollbarSlider-hoverBackground)}
+  ::-webkit-scrollbar-corner{background:var(--editor-background)}
+</style>
+</head>
+<body>
+<div class="vscode">
+  <div class="titlebar">
+    <div class="titlebar-dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <span id="titleText">server.ts — my-project — Visual Studio Code</span>
+  </div>
+  <div class="main">
+    <div class="activitybar">
+      <div class="ai active" onclick="switchPanel('explorer')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v10l7-5L3 7z"/><path d="M14 3v18l7-9-7-9z"/></svg></div>
+      <div class="ai" onclick="switchPanel('search')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg></div>
+      <div class="ai" onclick="switchPanel('scm')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="6" r="2"/><path d="M12 8v6"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M12 14l-6 2m6-2l6 2"/></svg></div>
+      <div class="ai" onclick="switchPanel('theme')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="5.5" r="1.5"/><circle cx="6.5" cy="10.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.04-.23-.29-.38-.63-.38-1.01 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.17-4.49-9-10-9z"/></svg></div>
+      <div class="ai" onclick="switchPanel('chat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
+      <div class="ai" onclick="switchPanel('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+    </div>
+    <div class="sidebar">
+      <div class="sidebar-hdr"><span id="sidebarTitle">Explorer</span><span style="font-size:14px;cursor:pointer">···</span></div>
+      <div class="tree" id="fileTree"></div>
+      <div class="theme-editor" id="themeEditor"></div>
+      <div class="chat-panel" id="chatPanel"></div>
+      <div class="settings-panel" id="settingsPanel"></div>
+    </div>
+    <div class="editor-area">
+      <div class="tab-bar" id="tabBar"></div>
+      <div class="bc" id="bc"></div>
+      <div class="ew">
+        <div class="es" id="es"><div id="ec"></div></div>
+        <div class="mm" id="mm"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-tabs">
+          <div class="pt">Problems</div><div class="pt">Output</div><div class="pt active">Terminal</div><div class="pt">Debug Console</div>
+        </div>
+        <div class="term">
+          <div><span class="tp">❯</span> <span class="tb">~/my-project</span> <span class="tc">npm run dev</span></div>
+          <div class="td">&nbsp;</div>
+          <div>&gt; my-project@1.0.0 dev</div>
+          <div>&gt; tsx watch src/server.ts</div>
+          <div class="td">&nbsp;</div>
+          <div><span class="tok">✓</span> Server running on <span style="color:var(--token-constant)">http://localhost:3000</span></div>
+          <div><span class="tok">✓</span> Database connected <span class="td">(postgres://localhost:5432/mydb)</span></div>
+          <div><span class="tw">⚠ Warning: NODE_ENV not set, defaulting to development</span></div>
+          <div><span class="tok">✓</span> Redis cache initialized</div>
+          <div>[10:42:31] GET /api/health <span class="tok">200</span><span class="td"> 3ms</span></div>
+          <div>[10:42:33] POST /api/auth/login <span class="tok">200</span><span class="td"> 142ms</span></div>
+          <div>[10:42:35] GET /api/users <span class="te">401</span><span class="td"> 2ms</span></div>
+          <div class="td">&nbsp;</div>
+          <div><span class="tp">❯</span> <span class="tb">~/my-project</span> <span class="cur-blink"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="statusbar">
+    <div class="sl"><span class="si">⟨⟩ main</span><span class="si">⊘ 0 ⚠ 1</span></div>
+    <div class="sr" id="sr"><span class="si"><button id="exportBtn" onclick="copyTheme()" style="background:var(--activityBarBadge-background);color:var(--statusBar-foreground);border:none;padding:2px 10px;border-radius:3px;cursor:pointer;font-family:var(--font-ui);font-size:11px;font-weight:600;letter-spacing:0.3px">📋 Export Theme JSON</button></span><span class="si">Ln 14, Col 28</span><span class="si">Spaces: 2</span><span class="si">UTF-8</span><span class="si">LF</span><span class="si">TypeScript</span><span class="si">Prettier</span></div>
+  </div>
+</div>
+<script>
+const extC={ts:'#3178c6',py:'#3572a5',json:'#cbcb41',yaml:'#cb171e',env:'#ecd53f',md:'#519aba',git:'#f14e32',lock:'#7a7a7a',dockerfile:'#2496ed'};
+const extL={ts:'TS',py:'PY',json:'{}',yaml:'Y',env:'⚙',md:'M',git:'G',lock:'🔒',dockerfile:'🐳'};
+const langN={ts:'TypeScript',py:'Python',json:'JSON',yaml:'YAML',env:'Properties',dockerfile:'Dockerfile'};
+
+const treeData=[
+  {t:'d',n:'my-project',l:0,o:true},{t:'d',n:'.vscode',l:1,o:false},{t:'d',n:'node_modules',l:1,o:false},
+  {t:'d',n:'src',l:1,o:true},{t:'d',n:'config',l:2,o:true},{t:'f',n:'database.ts',l:3,e:'ts'},
+  {t:'f',n:'settings.yaml',l:3,e:'yaml'},{t:'d',n:'models',l:2,o:true},{t:'f',n:'user.ts',l:3,e:'ts'},
+  {t:'d',n:'scripts',l:2,o:true},{t:'f',n:'migrate.py',l:3,e:'py'},{t:'f',n:'seed.py',l:3,e:'py'},
+  {t:'d',n:'utils',l:2,o:false},{t:'f',n:'server.ts',l:2,e:'ts'},{t:'d',n:'tests',l:1,o:false},
+  {t:'f',n:'.env',l:1,e:'env'},{t:'f',n:'.gitignore',l:1,e:'git'},{t:'f',n:'Dockerfile',l:1,e:'dockerfile'},{t:'f',n:'package.json',l:1,e:'json'},
+  {t:'f',n:'package-lock.json',l:1,e:'lock'},{t:'f',n:'README.md',l:1,e:'md'},{t:'f',n:'tsconfig.json',l:1,e:'json'},
+];
+
+const tabs=[{n:'server.ts',e:'ts'},{n:'.env',e:'env'},{n:'migrate.py',e:'py'},{n:'Dockerfile',e:'dockerfile'},{n:'package.json',e:'json'},{n:'settings.yaml',e:'yaml'}];
+let activeFile='server.ts';
+
+function switchTab(name){
+  activeFile=name;
+  renderTabs();renderTree();renderEditor(name);
+  const t=tabs.find(x=>x.n===name);
+  const lang=t?langN[t.e]||'Plain Text':'Plain Text';
+  document.getElementById('sr').innerHTML=`<span class="si"><button id="exportBtn" onclick="copyTheme()" style="background:var(--activityBarBadge-background);color:var(--statusBar-foreground);border:none;padding:2px 10px;border-radius:3px;cursor:pointer;font-family:var(--font-ui);font-size:11px;font-weight:600;letter-spacing:0.3px">📋 Export Theme JSON</button></span><span class="si">Ln 1, Col 1</span><span class="si">Spaces: 2</span><span class="si">UTF-8</span><span class="si">LF</span><span class="si">${lang}</span><span class="si">Prettier</span>`;
+  document.getElementById('titleText').textContent=`${name} — my-project — Visual Studio Code`;
+}
+
+function renderTree(){
+  document.getElementById('fileTree').innerHTML=treeData.map(item=>{
+    const indent=item.l*16;
+    const cls=item.n===activeFile?' active':'';
+    let icon;
+    if(item.t==='d'){icon=item.o?'<span style="color:#dcb67a;font-size:12px">▾ 📂</span>':'<span style="color:#dcb67a;font-size:12px">▸ 📁</span>';}
+    else{const c=extC[item.e]||'#ccc';const lb=extL[item.e]||'F';icon=`<span style="color:${c}">${lb}</span>`;}
+    const click=item.t==='f'&&tabs.find(t=>t.n===item.n)?` onclick="switchTab('${item.n}')"`:''
+    return `<div class="ti${cls}" style="padding-left:${indent}px"${click}><span class="ti-icon">${icon}</span><span>${item.n}</span></div>`;
+  }).join('');
+}
+
+function renderTabs(){
+  document.getElementById('tabBar').innerHTML=tabs.map(t=>{
+    const c=extC[t.e]||'#ccc';const lb=extL[t.e]||'F';const cls=t.n===activeFile?' active':'';
+    return `<div class="tab${cls}" onclick="switchTab('${t.n}')"><span class="tab-icon" style="color:${c}">${lb}</span><span>${t.n}</span><span class="tab-close">×</span></div>`;
+  }).join('');
+}
+
+// FILE CONTENTS — tokenized with TextMate-aligned class names
+const F={};
+
+F['server.ts']={cur:14,path:['my-project','src','server.ts'],lines:[
+[['comment','// src/server.ts']],
+[['control','import'],['plain',' { '],['type','Hono'],['plain',' } '],['control','from'],['plain',' '],['string',"'hono'"],['punctuation',';']],
+[['control','import'],['plain',' { '],['variable','cors'],['plain',' } '],['control','from'],['plain',' '],['string',"'hono/cors'"],['punctuation',';']],
+[['control','import'],['plain',' { '],['variable','logger'],['plain',' } '],['control','from'],['plain',' '],['string',"'hono/logger'"],['punctuation',';']],
+[['control','import'],['plain',' { '],['variable','db'],['plain',' } '],['control','from'],['plain',' '],['string',"'./config/database'"],['punctuation',';']],
+[[]],
+[['keyword','const'],['plain',' '],['constant','app'],['plain',' '],['operator','='],['plain',' '],['keyword','new'],['plain',' '],['type','Hono'],['punctuation','()'],['punctuation',';']],
+[['keyword','const'],['plain',' '],['constant','PORT'],['plain',' '],['operator','='],['plain',' '],['variable','process'],['punctuation','.'],['property','env'],['punctuation','.'],['property','PORT'],['plain',' '],['operator','||'],['plain',' '],['number','3000'],['punctuation',';']],
+[[]],
+[['comment','// Middleware']],
+[['variable','app'],['punctuation','.'],['function','use'],['punctuation','('],['function','cors'],['punctuation','())'],['punctuation',';']],
+[['variable','app'],['punctuation','.'],['function','use'],['punctuation','('],['function','logger'],['punctuation','())'],['punctuation',';']],
+[[]],
+[['comment','// Health check endpoint']],
+[['variable','app'],['punctuation','.'],['function','get'],['punctuation','('],['string',"'/api/health'"],['punctuation',', ('],['variable','c'],['punctuation',') '],['keyword','=>'],['plain',' '],['punctuation','{']],
+[['plain','  '],['control','return'],['plain',' '],['variable','c'],['punctuation','.'],['function','json'],['punctuation','({']],
+[['plain','    '],['property','status'],['punctuation',':'],['plain',' '],['string',"'ok'"],['punctuation',',']],
+[['plain','    '],['property','timestamp'],['punctuation',':'],['plain',' '],['keyword','new'],['plain',' '],['type','Date'],['punctuation','().'],['function','toISOString'],['punctuation','(),']],
+[['plain','    '],['property','version'],['punctuation',':'],['plain',' '],['string',"'1.0.0'"],['punctuation',',']],
+[['plain','  '],['punctuation','});']],
+[['punctuation','});']],
+[[]],
+[['comment','// User routes']],
+[['variable','app'],['punctuation','.'],['function','get'],['punctuation','('],['string',"'/api/users'"],['punctuation',', '],['keyword','async'],['plain',' '],['punctuation','('],['variable','c'],['punctuation',') '],['keyword','=>'],['plain',' '],['punctuation','{']],
+[['plain','  '],['keyword','const'],['plain',' '],['variable','users'],['plain',' '],['operator','='],['plain',' '],['keyword','await'],['plain',' '],['variable','db'],['punctuation','.'],['function','query'],['punctuation','('],['string',"'SELECT * FROM users'"],['punctuation',');']],
+[['plain','  '],['control','return'],['plain',' '],['variable','c'],['punctuation','.'],['function','json'],['punctuation','('],['variable','users'],['punctuation',');']],
+[['punctuation','});']],
+[[]],
+[['comment','// Start server']],
+[['builtin','console'],['punctuation','.'],['function','log'],['punctuation','('],['string','`✓ Server running on http://localhost:${'],['variable','PORT'],['string','}`'],['punctuation',');']],
+[[]],
+[['control','export'],['plain',' '],['control','default'],['plain',' '],['punctuation','{']],
+[['plain','  '],['property','port'],['punctuation',':'],['plain',' '],['constant','PORT'],['punctuation',',']],
+[['plain','  '],['property','fetch'],['punctuation',':'],['plain',' '],['variable','app'],['punctuation','.'],['property','fetch'],['punctuation',',']],
+[['punctuation','};']],
+]};
+
+F['.env']={cur:2,path:['my-project','.env'],lines:[
+[['comment','# Database']],
+[['envKey','DATABASE_URL'],['operator','='],['envValue','postgres://admin:secret@localhost:5432/mydb']],
+[['envKey','DB_POOL_SIZE'],['operator','='],['envValue','10']],
+[[]],
+[['comment','# Redis']],
+[['envKey','REDIS_URL'],['operator','='],['envValue','redis://localhost:6379']],
+[[]],
+[['comment','# Authentication']],
+[['envKey','JWT_SECRET'],['operator','='],['envValue','super-secret-key-change-in-production']],
+[['envKey','JWT_EXPIRY'],['operator','='],['envValue','7d']],
+[[]],
+[['comment','# App Config']],
+[['envKey','PORT'],['operator','='],['envValue','3000']],
+[['envKey','NODE_ENV'],['operator','='],['envValue','development']],
+[['envKey','LOG_LEVEL'],['operator','='],['envValue','debug']],
+[[]],
+[['comment','# External APIs']],
+[['envKey','OPENAI_API_KEY'],['operator','='],['envValue','sk-...']],
+[['envKey','STRIPE_SECRET_KEY'],['operator','='],['envValue','sk_test_...']],
+]};
+
+F['migrate.py']={cur:16,path:['my-project','src','scripts','migrate.py'],lines:[
+[['comment','#!/usr/bin/env python3']],
+[['comment','"""Database migration script."""']],
+[[]],
+[['control','import'],['plain',' '],['variable','os']],
+[['control','import'],['plain',' '],['variable','sys']],
+[['control','from'],['plain',' '],['variable','pathlib'],['plain',' '],['control','import'],['plain',' '],['type','Path']],
+[['control','from'],['plain',' '],['variable','datetime'],['plain',' '],['control','import'],['plain',' '],['type','datetime']],
+[[]],
+[['control','import'],['plain',' '],['variable','asyncpg']],
+[['control','import'],['plain',' '],['variable','click']],
+[[]],
+[[]],
+[['decorator','@click.command()']],
+[['decorator','@click.option'],['punctuation','('],['string',"'--direction'"],['punctuation',', '],['variable','default'],['operator','='],['string',"'up'"],['punctuation',')']],
+[['decorator','@click.option'],['punctuation','('],['string',"'--steps'"],['punctuation',', '],['variable','default'],['operator','='],['number','1'],['punctuation',', '],['variable','type'],['operator','='],['builtin','int'],['punctuation',')']],
+[['keyword','def'],['plain',' '],['function','migrate'],['punctuation','('],['parameter','direction'],['punctuation',': '],['type','str'],['punctuation',', '],['parameter','steps'],['punctuation',': '],['type','int'],['punctuation',') -> '],['type','None'],['punctuation',':']],
+[['plain','    '],['comment','"""Run database migrations."""']],
+[['plain','    '],['variable','db_url'],['plain',' '],['operator','='],['plain',' '],['variable','os'],['punctuation','.'],['variable','environ'],['punctuation','.'],['function','get'],['punctuation','('],['string',"'DATABASE_URL'"],['punctuation',')']],
+[[]],
+[['plain','    '],['control','if'],['plain',' '],['keyword','not'],['plain',' '],['variable','db_url'],['punctuation',':']],
+[['plain','        '],['builtin','print'],['punctuation','('],['string','"Error: DATABASE_URL not set"'],['punctuation',')']],
+[['plain','        '],['variable','sys'],['punctuation','.'],['function','exit'],['punctuation','('],['number','1'],['punctuation',')']],
+[[]],
+[['plain','    '],['variable','migration_dir'],['plain',' '],['operator','='],['plain',' '],['type','Path'],['punctuation','('],['string','"./migrations"'],['punctuation',')']],
+[['plain','    '],['variable','files'],['plain',' '],['operator','='],['plain',' '],['builtin','sorted'],['punctuation','('],['variable','migration_dir'],['punctuation','.'],['function','glob'],['punctuation','('],['string','"*.sql"'],['punctuation','))']],
+[[]],
+[['plain','    '],['control','for'],['plain',' '],['variable','f'],['plain',' '],['control','in'],['plain',' '],['variable','files'],['punctuation','[:'],['variable','steps'],['punctuation',']:']],
+[['plain','        '],['builtin','print'],['punctuation','('],['string','f"Applying {'],['variable','f'],['string','.name}..."'],['punctuation',')']],
+[['plain','        '],['comment','# Execute migration SQL']],
+[[]],
+[['plain','    '],['builtin','print'],['punctuation','('],['string','f"✓ Applied {'],['builtin','len'],['punctuation','('],['variable','files'],['punctuation',')'],['string','} migrations"'],['punctuation',')']],
+[[]],
+[[]],
+[['control','if'],['plain',' '],['variable','__name__'],['plain',' '],['operator','=='],['plain',' '],['string','"__main__"'],['punctuation',':']],
+[['plain','    '],['function','migrate'],['punctuation','()']],
+]};
+
+F['package.json']={cur:1,path:['my-project','package.json'],lines:[
+[['punctuation','{']],
+[['plain','  '],['key','"name"'],['punctuation',': '],['string','"my-project"'],['punctuation',',']],
+[['plain','  '],['key','"version"'],['punctuation',': '],['string','"1.0.0"'],['punctuation',',']],
+[['plain','  '],['key','"description"'],['punctuation',': '],['string','"A modern web application"'],['punctuation',',']],
+[['plain','  '],['key','"type"'],['punctuation',': '],['string','"module"'],['punctuation',',']],
+[['plain','  '],['key','"scripts"'],['punctuation',': {']],
+[['plain','    '],['key','"dev"'],['punctuation',': '],['string','"tsx watch src/server.ts"'],['punctuation',',']],
+[['plain','    '],['key','"build"'],['punctuation',': '],['string','"tsc && node dist/server.js"'],['punctuation',',']],
+[['plain','    '],['key','"test"'],['punctuation',': '],['string','"vitest run"'],['punctuation',',']],
+[['plain','    '],['key','"lint"'],['punctuation',': '],['string','"eslint src/**/*.ts"'],['punctuation',',']],
+[['plain','    '],['key','"migrate"'],['punctuation',': '],['string','"python src/scripts/migrate.py"']],
+[['plain','  '],['punctuation','},']],
+[['plain','  '],['key','"dependencies"'],['punctuation',': {']],
+[['plain','    '],['key','"hono"'],['punctuation',': '],['string','"^4.3.0"'],['punctuation',',']],
+[['plain','    '],['key','"drizzle-orm"'],['punctuation',': '],['string','"^0.30.0"'],['punctuation',',']],
+[['plain','    '],['key','"postgres"'],['punctuation',': '],['string','"^3.4.0"'],['punctuation',',']],
+[['plain','    '],['key','"redis"'],['punctuation',': '],['string','"^4.6.0"'],['punctuation',',']],
+[['plain','    '],['key','"zod"'],['punctuation',': '],['string','"^3.23.0"']],
+[['plain','  '],['punctuation','},']],
+[['plain','  '],['key','"devDependencies"'],['punctuation',': {']],
+[['plain','    '],['key','"typescript"'],['punctuation',': '],['string','"^5.4.0"'],['punctuation',',']],
+[['plain','    '],['key','"tsx"'],['punctuation',': '],['string','"^4.7.0"'],['punctuation',',']],
+[['plain','    '],['key','"vitest"'],['punctuation',': '],['string','"^1.5.0"'],['punctuation',',']],
+[['plain','    '],['key','"@types/node"'],['punctuation',': '],['string','"^20.0.0"']],
+[['plain','  '],['punctuation','}']],
+[['punctuation','}']],
+]};
+
+F['settings.yaml']={cur:3,path:['my-project','src','config','settings.yaml'],lines:[
+[['comment','# Application Configuration']],
+[['key','server'],['punctuation',':']],
+[['plain','  '],['key','host'],['punctuation',': '],['string','0.0.0.0']],
+[['plain','  '],['key','port'],['punctuation',': '],['number','3000']],
+[['plain','  '],['key','workers'],['punctuation',': '],['number','4']],
+[['plain','  '],['key','cors'],['punctuation',':']],
+[['plain','    '],['key','enabled'],['punctuation',': '],['constantLanguage','true']],
+[['plain','    '],['key','origins'],['punctuation',':']],
+[['plain','      '],['punctuation','- '],['string','http://localhost:5173']],
+[['plain','      '],['punctuation','- '],['string','https://myapp.dev']],
+[[]],
+[['comment','# Database settings']],
+[['key','database'],['punctuation',':']],
+[['plain','  '],['key','driver'],['punctuation',': '],['string','postgres']],
+[['plain','  '],['key','pool'],['punctuation',':']],
+[['plain','    '],['key','min'],['punctuation',': '],['number','2']],
+[['plain','    '],['key','max'],['punctuation',': '],['number','10']],
+[['plain','    '],['key','idle_timeout'],['punctuation',': '],['number','30000']],
+[['plain','  '],['key','migrations'],['punctuation',':']],
+[['plain','    '],['key','auto_run'],['punctuation',': '],['constantLanguage','false']],
+[['plain','    '],['key','directory'],['punctuation',': '],['string','./migrations']],
+[[]],
+[['comment','# Logging']],
+[['key','logging'],['punctuation',':']],
+[['plain','  '],['key','level'],['punctuation',': '],['string','info']],
+[['plain','  '],['key','format'],['punctuation',': '],['string','json']],
+[['plain','  '],['key','outputs'],['punctuation',':']],
+[['plain','    '],['punctuation','- '],['string','stdout']],
+[['plain','    '],['punctuation','- '],['key','file'],['punctuation',': '],['string','./logs/app.log']],
+[[]],
+[['comment','# Feature flags']],
+[['key','features'],['punctuation',':']],
+[['plain','  '],['key','dark_mode'],['punctuation',': '],['constantLanguage','true']],
+[['plain','  '],['key','beta_features'],['punctuation',': '],['constantLanguage','false']],
+[['plain','  '],['key','max_upload_mb'],['punctuation',': '],['number','50']],
+]};
+
+F['Dockerfile']={cur:7,path:['my-project','Dockerfile'],lines:[
+[['comment','# Build stage']],
+[['keyword','FROM'],['plain',' '],['string','node:20-alpine'],['plain',' '],['keyword','AS'],['plain',' '],['variable','builder']],
+[['keyword','WORKDIR'],['plain',' '],['string','/app']],
+[[]],
+[['comment','# Install dependencies first (cache layer)']],
+[['keyword','COPY'],['plain',' '],['string','package*.json'],['plain',' '],['string','./']],
+[['keyword','RUN'],['plain',' '],['function','npm'],['plain',' '],['variable','ci'],['plain',' '],['keyword','--'],['variable','omit'],['operator','='],['string','dev']],
+[[]],
+[['comment','# Copy source and build']],
+[['keyword','COPY'],['plain',' '],['string','tsconfig.json'],['plain',' '],['string','./']],
+[['keyword','COPY'],['plain',' '],['string','src/'],['plain',' '],['string','./src/']],
+[['keyword','RUN'],['plain',' '],['function','npm'],['plain',' '],['variable','run'],['plain',' '],['string','build']],
+[[]],
+[['comment','# Production stage']],
+[['keyword','FROM'],['plain',' '],['string','node:20-alpine'],['plain',' '],['keyword','AS'],['plain',' '],['variable','runner']],
+[['keyword','WORKDIR'],['plain',' '],['string','/app']],
+[[]],
+[['keyword','ENV'],['plain',' '],['envKey','NODE_ENV'],['operator','='],['envValue','production']],
+[['keyword','ENV'],['plain',' '],['envKey','PORT'],['operator','='],['envValue','3000']],
+[[]],
+[['comment','# Non-root user for security']],
+[['keyword','RUN'],['plain',' '],['function','addgroup'],['plain',' '],['keyword','-S'],['plain',' '],['variable','appgroup'],['plain',' '],['operator','&&'],['plain',' \\']],
+[['plain','    '],['function','adduser'],['plain',' '],['keyword','-S'],['plain',' '],['variable','appuser'],['plain',' '],['keyword','-G'],['plain',' '],['variable','appgroup']],
+[['keyword','USER'],['plain',' '],['variable','appuser']],
+[[]],
+[['comment','# Copy built artifacts from builder']],
+[['keyword','COPY'],['plain',' '],['keyword','--from'],['operator','='],['variable','builder'],['plain',' '],['string','/app/dist'],['plain',' '],['string','./dist']],
+[['keyword','COPY'],['plain',' '],['keyword','--from'],['operator','='],['variable','builder'],['plain',' '],['string','/app/node_modules'],['plain',' '],['string','./node_modules']],
+[['keyword','COPY'],['plain',' '],['keyword','--from'],['operator','='],['variable','builder'],['plain',' '],['string','/app/package.json'],['plain',' '],['string','./']],
+[[]],
+[['keyword','EXPOSE'],['plain',' '],['number','3000']],
+[[]],
+[['keyword','HEALTHCHECK'],['plain',' '],['keyword','--interval'],['operator','='],['string','30s'],['plain',' '],['keyword','--timeout'],['operator','='],['string','3s'],['plain',' \\']],
+[['plain','  '],['keyword','CMD'],['plain',' '],['function','wget'],['plain',' '],['keyword','--spider'],['plain',' '],['string','http://localhost:3000/api/health'],['plain',' '],['operator','||'],['plain',' '],['variable','exit'],['plain',' '],['number','1']],
+[[]],
+[['keyword','CMD'],['plain',' '],['punctuation','['],['string','"node"'],['punctuation',', '],['string','"dist/server.js"'],['punctuation',']']],
+]};
+
+// ═══════════════════════════════════════════════
+// THEME EXPORT — generates valid VSCode -color-theme.json
+// ═══════════════════════════════════════════════
+
+// Maps CSS variable names → VSCode colors object keys
+const workbenchColorMap = {
+  '--editor-background': 'editor.background',
+  '--editor-foreground': 'editor.foreground',
+  '--editor-selectionBackground': 'editor.selectionBackground',
+  '--editor-lineHighlightBackground': 'editor.lineHighlightBackground',
+  '--editorLineNumber-foreground': 'editorLineNumber.foreground',
+  '--editorLineNumber-activeForeground': 'editorLineNumber.activeForeground',
+  '--editorCursor-foreground': 'editorCursor.foreground',
+  '--titleBar-activeBackground': 'titleBar.activeBackground',
+  '--titleBar-activeForeground': 'titleBar.activeForeground',
+  '--activityBar-background': 'activityBar.background',
+  '--activityBar-foreground': 'activityBar.foreground',
+  '--activityBar-inactiveForeground': 'activityBar.inactiveForeground',
+  '--activityBar-activeBorder': 'activityBar.activeBorder',
+  '--activityBarBadge-background': 'activityBarBadge.background',
+  '--sideBar-background': 'sideBar.background',
+  '--sideBar-foreground': 'sideBar.foreground',
+  '--sideBarTitle-foreground': 'sideBarTitle.foreground',
+  '--sideBarSectionHeader-foreground': 'sideBarSectionHeader.foreground',
+  '--list-activeSelectionBackground': 'list.activeSelectionBackground',
+  '--list-activeSelectionForeground': 'list.activeSelectionForeground',
+  '--list-hoverBackground': 'list.hoverBackground',
+  '--editorGroupHeader-tabsBackground': 'editorGroupHeader.tabsBackground',
+  '--tab-activeBackground': 'tab.activeBackground',
+  '--tab-activeForeground': 'tab.activeForeground',
+  '--tab-inactiveBackground': 'tab.inactiveBackground',
+  '--tab-inactiveForeground': 'tab.inactiveForeground',
+  '--tab-border': 'tab.border',
+  '--breadcrumb-foreground': 'breadcrumb.foreground',
+  '--panel-border': 'panel.border',
+  '--panelTitle-activeForeground': 'panelTitle.activeForeground',
+  '--panelTitle-inactiveForeground': 'panelTitle.inactiveForeground',
+  '--panelTitle-activeBorder': 'panelTitle.activeBorder',
+  '--terminal-foreground': 'terminal.foreground',
+  '--terminal-background': 'terminal.background',
+  '--terminal-ansiGreen': 'terminal.ansiGreen',
+  '--terminal-ansiBlue': 'terminal.ansiBlue',
+  '--terminal-ansiYellow': 'terminal.ansiYellow',
+  '--terminal-ansiRed': 'terminal.ansiRed',
+  '--terminal-ansiCyan': 'terminal.ansiCyan',
+  '--terminal-ansiBrightBlack': 'terminal.ansiBrightBlack',
+  '--statusBar-background': 'statusBar.background',
+  '--statusBar-foreground': 'statusBar.foreground',
+  '--minimap-background': 'minimap.background',
+  '--scrollbarSlider-background': 'scrollbarSlider.background',
+  '--scrollbarSlider-hoverBackground': 'scrollbarSlider.hoverBackground',
+  '--foreground': 'foreground',
+  '--focusBorder': 'focusBorder',
+};
+
+// Maps CSS variable names → TextMate scope arrays for tokenColors
+const tokenScopeMap = {
+  '--token-comment': { name: 'Comments', scope: ['comment','comment.line','comment.block'] },
+  '--token-keyword': { name: 'Keywords', scope: ['keyword','storage','storage.type','storage.modifier'] },
+  '--token-control': { name: 'Control flow', scope: ['keyword.control','keyword.control.flow'] },
+  '--token-string': { name: 'Strings', scope: ['string','string.quoted','string.template'] },
+  '--token-number': { name: 'Numbers', scope: ['constant.numeric','constant.numeric.decimal'] },
+  '--token-function': { name: 'Functions', scope: ['entity.name.function','support.function'] },
+  '--token-type': { name: 'Types', scope: ['support.class','support.type','entity.name.type','entity.name.class','entity.name.namespace'] },
+  '--token-variable': { name: 'Variables', scope: ['variable','meta.definition.variable.name','support.variable','entity.name.variable'] },
+  '--token-parameter': { name: 'Parameters', scope: ['variable.parameter'] },
+  '--token-property': { name: 'Properties', scope: ['variable.other.property','meta.object-literal.key'] },
+  '--token-constant': { name: 'Constants', scope: ['variable.other.constant','variable.other.enummember'] },
+  '--token-constantLanguage': { name: 'Language constants', scope: ['constant.language'] },
+  '--token-operator': { name: 'Operators', scope: ['keyword.operator','keyword.operator.expression'] },
+  '--token-punctuation': { name: 'Punctuation', scope: ['punctuation'] },
+  '--token-tag': { name: 'Tags', scope: ['entity.name.tag'] },
+  '--token-decorator': { name: 'Decorators', scope: ['meta.decorator','punctuation.decorator'] },
+  '--token-builtin': { name: 'Built-in functions', scope: ['support.function.builtin','support.constant.builtin'] },
+  '--token-variableLanguage': { name: 'Language variables', scope: ['variable.language'] },
+};
+
+function exportTheme() {
+  const root = document.documentElement;
+  const style = getComputedStyle(root);
+
+  // Build colors object
+  const colors = {};
+  for (const [cssVar, vsKey] of Object.entries(workbenchColorMap)) {
+    const val = style.getPropertyValue(cssVar).trim();
+    if (val) colors[vsKey] = val;
+  }
+
+  // Build tokenColors array
+  const tokenColors = [
+    { settings: { foreground: style.getPropertyValue('--token-foreground').trim() } }
+  ];
+  for (const [cssVar, info] of Object.entries(tokenScopeMap)) {
+    const val = style.getPropertyValue(cssVar).trim();
+    if (val) {
+      tokenColors.push({
+        name: info.name,
+        scope: info.scope,
+        settings: { foreground: val }
+      });
+    }
+  }
+
+  // Add italic for comments
+  const commentEntry = tokenColors.find(t => t.name === 'Comments');
+  if (commentEntry) commentEntry.settings.fontStyle = 'italic';
+
+  const theme = {
+    "$schema": "vscode://schemas/color-theme",
+    name: "My Custom Theme",
+    type: "dark",
+    colors,
+    tokenColors,
+    semanticHighlighting: true,
+    semanticTokenColors: {
+      "newOperator": style.getPropertyValue('--token-control').trim(),
+      "stringLiteral": style.getPropertyValue('--token-string').trim(),
+      "numberLiteral": style.getPropertyValue('--token-number').trim(),
+    }
+  };
+
+  return JSON.stringify(theme, null, 2);
+}
+
+function copyTheme() {
+  const json = exportTheme();
+  navigator.clipboard.writeText(json).then(() => {
+    const btn = document.getElementById('exportBtn');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = '#16825d';
+    setTimeout(() => { btn.textContent = '📋 Export Theme JSON'; btn.style.background = ''; }, 2000);
+  }).catch(() => {
+    // Fallback for non-HTTPS contexts
+    const ta = document.createElement('textarea');
+    ta.value = exportTheme();
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('exportBtn');
+    btn.textContent = '✓ Copied!';
+    btn.style.background = '#16825d';
+    setTimeout(() => { btn.textContent = '📋 Export Theme JSON'; btn.style.background = ''; }, 2000);
+  });
+}
+
+const colorMap={comment:'var(--token-comment)',keyword:'var(--token-keyword)',control:'var(--token-control)',string:'var(--token-string)',function:'var(--token-function)',type:'var(--token-type)',variable:'var(--token-variable)',number:'var(--token-number)',decorator:'var(--token-decorator)',constant:'var(--token-constant)',envKey:'var(--token-envKey)',key:'var(--token-yamlKey)',builtin:'var(--token-builtin)',property:'var(--token-property)'};
+
+function renderEditor(name){
+  const f=F[name]; if(!f) return;
+  const el=document.getElementById('ec');
+  const scr=document.getElementById('es');
+  let h='<div class="code">';
+  f.lines.forEach((tokens,i)=>{
+    const n=i+1; const cur=n===f.cur?' cur':'';
+    h+=`<div class="cl${cur}"><span class="ln">${n}</span><span class="lc">`;
+    tokens.forEach(([cls,text])=>{
+      if(text!==undefined){
+        const esc=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        h+=`<span class="tok-${cls}">${esc}</span>`;
+      }
+    });
+    h+='</span></div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+  scr.scrollTop=0;
+
+  document.getElementById('bc').innerHTML=f.path.map((p,i,a)=>
+    i<a.length-1?`<span>${p}</span><span class="bc-sep">›</span>`:`<span>${p}</span>`
+  ).join('');
+
+  const mm=document.getElementById('mm');
+  mm.innerHTML=f.lines.map(tokens=>{
+    const w=Math.min(100,Math.max(10,tokens.reduce((s,t)=>s+(t[1]||'').length,0)*2.5));
+    const d=tokens.find(t=>t[0]!=='plain'&&t[0]!=='punctuation'&&t[1]);
+    const c=d&&colorMap[d[0]]?colorMap[d[0]]:'var(--token-foreground)';
+    return `<div class="mm-l" style="width:${w}%;background:${c}"></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// SIDEBAR PANEL SWITCHING
+// ═══════════════════════════════════════════════
+
+let activePanel = 'explorer';
+
+function switchPanel(panel) {
+  const icons = document.querySelectorAll('.ai');
+  icons.forEach(i => i.classList.remove('active'));
+  const panelMap = { explorer:0, search:1, scm:2, theme:3, chat:4, settings:5 };
+  if (panelMap[panel] !== undefined) icons[panelMap[panel]].classList.add('active');
+
+  const tree = document.getElementById('fileTree');
+  const themeEd = document.getElementById('themeEditor');
+  const chatP = document.getElementById('chatPanel');
+  const settingsP = document.getElementById('settingsPanel');
+  const title = document.getElementById('sidebarTitle');
+
+  // Hide all
+  tree.style.display = 'none';
+  themeEd.classList.remove('visible');
+  chatP.classList.remove('visible');
+  settingsP.classList.remove('visible');
+
+  if (panel === 'theme') {
+    themeEd.classList.add('visible');
+    title.textContent = 'Theme Editor';
+    if (!themeEd.hasChildNodes()) buildThemeEditor();
+  } else if (panel === 'chat') {
+    chatP.classList.add('visible');
+    title.textContent = 'AI Theme Chat';
+    if (!chatP.hasChildNodes()) buildChatPanel();
+  } else if (panel === 'settings') {
+    settingsP.classList.add('visible');
+    title.textContent = 'AI Settings';
+    if (!settingsP.hasChildNodes()) buildSettingsPanel();
+  } else {
+    tree.style.display = '';
+    title.textContent = panel === 'explorer' ? 'Explorer' : panel.charAt(0).toUpperCase() + panel.slice(1);
+  }
+  activePanel = panel;
+}
+
+// ═══════════════════════════════════════════════
+// AI CONFIG STATE
+// ═══════════════════════════════════════════════
+
+const aiConfig = {
+  provider: 'ollama',
+  apiKey: '',
+  ollamaUrl: 'http://localhost:11434',
+  model: '',
+  models: [],
+  connected: false,
+};
+
+const chatHistory = []; // {role, content} array for conversation
+
+const ANTHROPIC_MODELS = [
+  { id: 'claude-sonnet-4-6', name: 'Sonnet 4.6' },
+  { id: 'claude-haiku-4-5-20251001', name: 'Haiku 4.5' },
+];
+
+// All CSS vars the LLM can set — used in system prompt and validation
+const ALL_THEME_VARS = [
+  '--editor-background','--editor-foreground','--editor-selectionBackground','--editor-lineHighlightBackground',
+  '--editorLineNumber-foreground','--editorLineNumber-activeForeground','--editorCursor-foreground',
+  '--titleBar-activeBackground','--titleBar-activeForeground',
+  '--activityBar-background','--activityBar-foreground','--activityBar-inactiveForeground','--activityBarBadge-background',
+  '--sideBar-background','--sideBar-foreground','--sideBarSectionHeader-foreground',
+  '--list-activeSelectionBackground','--list-activeSelectionForeground','--list-hoverBackground',
+  '--editorGroupHeader-tabsBackground','--tab-activeBackground','--tab-activeForeground',
+  '--tab-inactiveBackground','--tab-inactiveForeground','--tab-border',
+  '--breadcrumb-foreground','--panel-border',
+  '--panelTitle-activeForeground','--panelTitle-inactiveForeground',
+  '--terminal-foreground','--terminal-background',
+  '--terminal-ansiGreen','--terminal-ansiBlue','--terminal-ansiYellow','--terminal-ansiRed','--terminal-ansiCyan','--terminal-ansiBrightBlack',
+  '--statusBar-background','--statusBar-foreground',
+  '--minimap-background','--scrollbarSlider-background','--foreground','--focusBorder',
+  '--token-foreground','--token-comment','--token-keyword','--token-control','--token-string','--token-number',
+  '--token-function','--token-type','--token-variable','--token-parameter','--token-property',
+  '--token-constant','--token-constantLanguage','--token-operator','--token-punctuation',
+  '--token-tag','--token-decorator','--token-builtin','--token-variableLanguage',
+  '--token-envKey','--token-envValue','--token-yamlKey','--token-jsonKey',
+];
+
+const THEME_SYSTEM_PROMPT = `You are a VSCode color theme generator. You output JSON objects that map CSS variable names to hex color values. You have expert knowledge of color theory, contrast ratios, and what makes code readable.
+
+CRITICAL: Respond with ONLY a JSON object. No markdown fences, no explanation, no preamble. Just raw JSON starting with { and ending with }.
+
+CSS VARIABLES YOU CAN SET:
+
+Workbench (backgrounds and UI chrome):
+--editor-background, --editor-foreground, --editor-selectionBackground, --editor-lineHighlightBackground
+--editorLineNumber-foreground, --editorLineNumber-activeForeground, --editorCursor-foreground
+--titleBar-activeBackground, --titleBar-activeForeground
+--activityBar-background, --activityBar-foreground, --activityBar-inactiveForeground, --activityBarBadge-background
+--sideBar-background, --sideBar-foreground, --sideBarSectionHeader-foreground
+--list-activeSelectionBackground, --list-activeSelectionForeground, --list-hoverBackground
+--editorGroupHeader-tabsBackground, --tab-activeBackground, --tab-activeForeground
+--tab-inactiveBackground, --tab-inactiveForeground, --tab-border
+--breadcrumb-foreground, --panel-border
+--panelTitle-activeForeground, --panelTitle-inactiveForeground
+--terminal-foreground, --terminal-background
+--terminal-ansiGreen, --terminal-ansiBlue, --terminal-ansiYellow, --terminal-ansiRed, --terminal-ansiCyan, --terminal-ansiBrightBlack
+--statusBar-background, --statusBar-foreground
+--minimap-background, --scrollbarSlider-background, --foreground, --focusBorder
+
+Syntax tokens (code highlighting):
+--token-foreground (default text), --token-comment, --token-keyword (const/let/var/def/class)
+--token-control (if/return/import/for/while), --token-string, --token-number
+--token-function (function names and calls), --token-type (class/type names)
+--token-variable, --token-parameter, --token-property (object keys)
+--token-constant, --token-constantLanguage (true/false/null)
+--token-operator (= + - etc), --token-punctuation ({ } ; etc)
+--token-tag, --token-decorator, --token-builtin, --token-variableLanguage (self/this)
+
+DESIGN RULES:
+- Editor background is the darkest for dark themes, lightest for light themes
+- Sidebar, titlebar, activity bar should be slightly different shades from editor for visual depth
+- Syntax tokens must have enough contrast against editor background (min 4:1 ratio)
+- Each token type should be visually distinguishable from its neighbors
+- Comments should be the most muted token
+- Keywords and control flow should be prominent but not harsh
+- Strings and numbers should be warm tones
+- Use --scrollbarSlider-background with alpha (e.g. #88888840) for transparency
+
+For a FULL theme, include all variables. For a TWEAK, include only the ones to change.
+
+Example — user says "forest theme":
+{"--editor-background":"#1a2318","--editor-foreground":"#c8d8c0","--sideBar-background":"#161e14","--activityBar-background":"#121a10","--titleBar-activeBackground":"#121a10","--statusBar-background":"#2d5a1e","--statusBar-foreground":"#d0e8c8","--tab-activeBackground":"#1a2318","--tab-activeForeground":"#e0f0d8","--tab-inactiveBackground":"#182015","--tab-inactiveForeground":"#6a8a5e","--editorLineNumber-foreground":"#4a6a3e","--token-keyword":"#7ab86a","--token-control":"#5a9db8","--token-string":"#c8a860","--token-number":"#a0c890","--token-function":"#b8d488","--token-type":"#68b8a0","--token-comment":"#4a6040","--token-variable":"#b8ccaa","--token-property":"#98b480","--token-operator":"#788868","--token-punctuation":"#607850"}`;
+
+// ═══════════════════════════════════════════════
+// SETTINGS PANEL
+// ═══════════════════════════════════════════════
+
+function buildSettingsPanel() {
+  const c = document.getElementById('settingsPanel');
+  c.innerHTML = `
+    <div class="sp-group">
+      <div class="sp-label">Provider</div>
+      <div class="sp-radios">
+        <div class="sp-radio${aiConfig.provider==='ollama'?' active':''}" onclick="setProvider('ollama')">Ollama</div>
+        <div class="sp-radio${aiConfig.provider==='anthropic'?' active':''}" onclick="setProvider('anthropic')">Anthropic</div>
+      </div>
+    </div>
+    <div class="sp-group" id="sp-ollama-fields"${aiConfig.provider!=='ollama'?' style="display:none"':''}>
+      <div class="sp-sublabel">Ollama URL</div>
+      <input class="sp-input" id="sp-ollama-url" type="text" value="${aiConfig.ollamaUrl}" placeholder="http://localhost:11434">
+    </div>
+    <div class="sp-group" id="sp-anthropic-fields"${aiConfig.provider!=='anthropic'?' style="display:none"':''}>
+      <div class="sp-sublabel">API Key</div>
+      <input class="sp-input" id="sp-api-key" type="password" value="${aiConfig.apiKey}" placeholder="sk-ant-...">
+    </div>
+    <button class="te-btn" onclick="connectProvider()" id="sp-connect-btn">Connect</button>
+    <div class="sp-group" id="sp-model-group" style="display:none">
+      <div class="sp-sublabel">Model</div>
+      <select class="sp-select" id="sp-model-select" onchange="aiConfig.model=this.value"></select>
+    </div>
+    <div id="sp-status"></div>
+  `;
+}
+
+function setProvider(p) {
+  aiConfig.provider = p;
+  aiConfig.connected = false;
+  aiConfig.models = [];
+  aiConfig.model = '';
+  // Re-render
+  buildSettingsPanel();
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('sp-status');
+  if (el) { el.innerHTML = '<div class="sp-status ' + type + '">' + msg + '</div>'; }
+}
+
+async function connectProvider() {
+  const btn = document.getElementById('sp-connect-btn');
+  btn.textContent = 'Connecting...';
+  btn.disabled = true;
+
+  try {
+    if (aiConfig.provider === 'ollama') {
+      const url = document.getElementById('sp-ollama-url').value.replace(/\/+$/, '');
+      aiConfig.ollamaUrl = url;
+      const res = await fetch(url + '/api/tags');
+      if (!res.ok) throw new Error('Ollama returned ' + res.status);
+      const data = await res.json();
+      aiConfig.models = (data.models || []).map(m => ({ id: m.name, name: m.name }));
+      if (aiConfig.models.length === 0) throw new Error('No models found. Pull a model with: ollama pull llama3');
+    } else {
+      const key = document.getElementById('sp-api-key').value.trim();
+      if (!key) throw new Error('API key required');
+      aiConfig.apiKey = key;
+      // Try models endpoint, fall back to hardcoded list
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/models', {
+          headers: {
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true',
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          aiConfig.models = (data.data || [])
+            .filter(m => m.id.includes('claude'))
+            .sort((a, b) => b.id.localeCompare(a.id))
+            .slice(0, 8)
+            .map(m => ({ id: m.id, name: m.id.replace('claude-', '').replace(/-\d{8}$/, '') }));
+        }
+      } catch (e) { /* fall through to hardcoded */ }
+      if (aiConfig.models.length === 0) aiConfig.models = ANTHROPIC_MODELS;
+    }
+
+    aiConfig.model = aiConfig.models[0].id;
+    aiConfig.connected = true;
+
+    // Show model selector
+    const mg = document.getElementById('sp-model-group');
+    const ms = document.getElementById('sp-model-select');
+    mg.style.display = '';
+    ms.innerHTML = aiConfig.models.map(m =>
+      '<option value="' + m.id + '">' + m.name + '</option>'
+    ).join('');
+
+    showStatus('Connected — ' + aiConfig.models.length + ' model(s)', 'ok');
+  } catch (err) {
+    aiConfig.connected = false;
+    showStatus(err.message, 'err');
+  }
+
+  btn.textContent = 'Connect';
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════
+// CHAT PANEL
+// ═══════════════════════════════════════════════
+
+function buildChatPanel() {
+  const c = document.getElementById('chatPanel');
+  c.innerHTML = `
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg system">Describe a theme and the AI will generate it live. Configure a provider in Settings first.</div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Describe a theme..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+      <button class="chat-send" id="chatSendBtn" onclick="sendChat()">▸</button>
+    </div>
+  `;
+}
+
+function addChatMsg(role, text, cssClass) {
+  const el = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (cssClass || role);
+  div.textContent = text;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  return div;
+}
+
+function getCurrentThemeState() {
+  const style = getComputedStyle(document.documentElement);
+  const state = {};
+  // Include just the key variables for context
+  const keys = ['--editor-background','--editor-foreground','--token-keyword','--token-control',
+    '--token-string','--token-function','--token-type','--token-comment','--token-variable',
+    '--token-number','--token-property','--token-operator','--token-punctuation',
+    '--sideBar-background','--statusBar-background','--statusBar-foreground',
+    '--activityBar-background','--titleBar-activeBackground'];
+  keys.forEach(k => {
+    const v = style.getPropertyValue(k).trim();
+    if (v) state[k] = v;
+  });
+  return state;
+}
+
+async function sendChat() {
+  if (!aiConfig.connected) {
+    addChatMsg('system', 'Connect a provider in Settings first (gear icon).');
+    return;
+  }
+
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  addChatMsg('user', text);
+
+  const btn = document.getElementById('chatSendBtn');
+  btn.disabled = true;
+
+  // Build user message with current theme context if there's history
+  let userContent = text;
+  if (chatHistory.length > 0) {
+    const state = getCurrentThemeState();
+    userContent = 'Current theme state: ' + JSON.stringify(state) + '\n\nUser request: ' + text;
+  }
+
+  chatHistory.push({ role: 'user', content: userContent });
+
+  const thinkingMsg = addChatMsg('system', 'Thinking...');
+
+  try {
+    let response;
+    if (aiConfig.provider === 'ollama') {
+      response = await callOllama(chatHistory);
+    } else {
+      response = await callAnthropic(chatHistory);
+    }
+
+    thinkingMsg.remove();
+
+    // Try to extract and apply theme JSON
+    const themeData = extractThemeJSON(response);
+    if (themeData) {
+      const count = applyExtractedTheme(themeData);
+      const msgDiv = addChatMsg('assistant', 'Applied ' + count + ' color(s)', 'assistant applied');
+
+      // Also show any non-JSON text the model sent
+      const cleanText = response.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+      const jsonStart = cleanText.indexOf('{');
+      const jsonEnd = cleanText.lastIndexOf('}');
+      let prose = '';
+      if (jsonStart > 0) prose += cleanText.slice(0, jsonStart).trim();
+      if (jsonEnd < cleanText.length - 1) prose += ' ' + cleanText.slice(jsonEnd + 1).trim();
+      prose = prose.trim();
+      if (prose) addChatMsg('assistant', prose);
+    } else {
+      addChatMsg('assistant', response);
+    }
+
+    chatHistory.push({ role: 'assistant', content: response });
+
+  } catch (err) {
+    thinkingMsg.remove();
+    addChatMsg('system', 'Error: ' + err.message);
+    chatHistory.pop(); // remove failed user msg
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+async function callOllama(messages) {
+  const res = await fetch(aiConfig.ollamaUrl + '/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: aiConfig.model,
+      stream: false,
+      messages: [
+        { role: 'system', content: THEME_SYSTEM_PROMPT },
+        ...messages,
+      ],
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => res.status);
+    throw new Error('Ollama error: ' + errText);
+  }
+  const data = await res.json();
+  return data.message?.content || '';
+}
+
+async function callAnthropic(messages) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': aiConfig.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: aiConfig.model,
+      max_tokens: 4096,
+      system: THEME_SYSTEM_PROMPT,
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
+    }),
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error?.message || 'API error ' + res.status);
+  }
+  const data = await res.json();
+  return (data.content || []).map(b => b.text || '').join('');
+}
+
+function extractThemeJSON(text) {
+  // Strip markdown code fences
+  let cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+  // Find outermost { ... }
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1 || end <= start) return null;
+  const candidate = cleaned.slice(start, end + 1);
+  try {
+    const obj = JSON.parse(candidate);
+    // Validate it looks like a theme (has at least one -- prefixed key)
+    const keys = Object.keys(obj);
+    if (keys.some(k => k.startsWith('--'))) return obj;
+    return null;
+  } catch {
+    // Try stripping trailing commas (common LLM mistake)
+    try {
+      const fixed = candidate.replace(/,(\s*[}\]])/g, '$1');
+      const obj = JSON.parse(fixed);
+      if (Object.keys(obj).some(k => k.startsWith('--'))) return obj;
+    } catch { /* give up */ }
+    return null;
+  }
+}
+
+function applyExtractedTheme(data) {
+  const root = document.documentElement;
+  const validVarSet = new Set(ALL_THEME_VARS);
+  let count = 0;
+  for (const [key, val] of Object.entries(data)) {
+    if (!validVarSet.has(key)) continue;
+    if (typeof val !== 'string') continue;
+    if (!/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(val)) continue;
+    root.style.setProperty(key, val);
+    count++;
+  }
+  // Refresh theme editor pickers if they exist
+  if (typeof refreshThemeEditorUI === 'function') {
+    try { refreshThemeEditorUI(); } catch {}
+  }
+  return count;
+}
+
+// ═══════════════════════════════════════════════
+// THEME EDITOR — color pickers bound to CSS vars
+// ═══════════════════════════════════════════════
+
+// Store defaults so we can reset individual vars
+const defaultValues = {};
+
+const themeGroups = [
+  { name: 'Editor', open: true, vars: [
+    ['--editor-background', 'Background'],
+    ['--editor-foreground', 'Foreground'],
+    ['--editor-selectionBackground', 'Selection'],
+    ['--editor-lineHighlightBackground', 'Line Highlight'],
+    ['--editorCursor-foreground', 'Cursor'],
+    ['--editorLineNumber-foreground', 'Line Numbers'],
+    ['--editorLineNumber-activeForeground', 'Active Line No.'],
+  ]},
+  { name: 'Title Bar', open: false, vars: [
+    ['--titleBar-activeBackground', 'Background'],
+    ['--titleBar-activeForeground', 'Foreground'],
+  ]},
+  { name: 'Activity Bar', open: false, vars: [
+    ['--activityBar-background', 'Background'],
+    ['--activityBar-foreground', 'Foreground'],
+    ['--activityBar-inactiveForeground', 'Inactive'],
+    ['--activityBar-activeBorder', 'Active Border'],
+    ['--activityBarBadge-background', 'Badge'],
+  ]},
+  { name: 'Sidebar', open: false, vars: [
+    ['--sideBar-background', 'Background'],
+    ['--sideBar-foreground', 'Foreground'],
+    ['--sideBarSectionHeader-foreground', 'Section Header'],
+    ['--list-activeSelectionBackground', 'Selection BG'],
+    ['--list-activeSelectionForeground', 'Selection FG'],
+    ['--list-hoverBackground', 'Hover BG'],
+  ]},
+  { name: 'Tabs', open: false, vars: [
+    ['--editorGroupHeader-tabsBackground', 'Bar BG'],
+    ['--tab-activeBackground', 'Active BG'],
+    ['--tab-activeForeground', 'Active FG'],
+    ['--tab-inactiveBackground', 'Inactive BG'],
+    ['--tab-inactiveForeground', 'Inactive FG'],
+    ['--tab-border', 'Border'],
+  ]},
+  { name: 'Status Bar', open: false, vars: [
+    ['--statusBar-background', 'Background'],
+    ['--statusBar-foreground', 'Foreground'],
+  ]},
+  { name: 'Terminal', open: false, vars: [
+    ['--terminal-background', 'Background'],
+    ['--terminal-foreground', 'Foreground'],
+    ['--terminal-ansiGreen', 'Green'],
+    ['--terminal-ansiBlue', 'Blue'],
+    ['--terminal-ansiYellow', 'Yellow'],
+    ['--terminal-ansiRed', 'Red'],
+    ['--terminal-ansiCyan', 'Cyan'],
+    ['--terminal-ansiBrightBlack', 'Bright Black'],
+  ]},
+  { name: 'Syntax — Core', open: true, vars: [
+    ['--token-foreground', 'Default Text'],
+    ['--token-keyword', 'Keywords'],
+    ['--token-control', 'Control Flow'],
+    ['--token-string', 'Strings'],
+    ['--token-number', 'Numbers'],
+    ['--token-comment', 'Comments'],
+    ['--token-function', 'Functions'],
+    ['--token-type', 'Types/Classes'],
+  ]},
+  { name: 'Syntax — Extras', open: false, vars: [
+    ['--token-variable', 'Variables'],
+    ['--token-parameter', 'Parameters'],
+    ['--token-property', 'Properties'],
+    ['--token-constant', 'Constants'],
+    ['--token-constantLanguage', 'Lang Constants'],
+    ['--token-operator', 'Operators'],
+    ['--token-punctuation', 'Punctuation'],
+    ['--token-decorator', 'Decorators'],
+    ['--token-builtin', 'Built-ins'],
+    ['--token-variableLanguage', 'Lang Variables'],
+    ['--token-tag', 'Tags'],
+  ]},
+  { name: 'Misc', open: false, vars: [
+    ['--breadcrumb-foreground', 'Breadcrumbs'],
+    ['--panel-border', 'Panel Border'],
+    ['--panelTitle-activeForeground', 'Panel Tab Active'],
+    ['--panelTitle-inactiveForeground', 'Panel Tab Inactive'],
+    ['--minimap-background', 'Minimap BG'],
+    ['--scrollbarSlider-background', 'Scrollbar'],
+    ['--focusBorder', 'Focus Border'],
+    ['--foreground', 'UI Foreground'],
+  ]},
+];
+
+// Normalize any color value to 6-digit hex for the color input (strips alpha)
+function toHex6(val) {
+  val = val.trim();
+  // Handle rgb/rgba from getComputedStyle
+  const rgbMatch = val.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (rgbMatch) {
+    const [, r, g, b] = rgbMatch;
+    return '#' + [r, g, b].map(c => (+c).toString(16).padStart(2, '0')).join('');
+  }
+  // 4-digit hex → 6
+  if (/^#[0-9a-f]{3}$/i.test(val)) return '#' + val[1]+val[1]+val[2]+val[2]+val[3]+val[3];
+  // 8-digit hex → strip alpha for picker
+  if (/^#[0-9a-f]{8}$/i.test(val)) return val.slice(0, 7);
+  // Already 6-digit or close enough
+  if (/^#[0-9a-f]{6}$/i.test(val)) return val;
+  return val;
+}
+
+function buildThemeEditor() {
+  const root = document.documentElement;
+  const style = getComputedStyle(root);
+  const container = document.getElementById('themeEditor');
+
+  // Capture defaults on first build
+  themeGroups.forEach(group => {
+    group.vars.forEach(([cssVar]) => {
+      if (!defaultValues[cssVar]) {
+        defaultValues[cssVar] = style.getPropertyValue(cssVar).trim();
+      }
+    });
+  });
+
+  let html = '<input type="file" id="themeFileInput" accept=".json,.jsonc" style="display:none" onchange="handleThemeUpload(this)">';
+  html += '<div class="te-toolbar">';
+  html += '<button class="te-btn" onclick="document.getElementById(\'themeFileInput\').click()">⬆ Import JSON</button>';
+  html += '<button class="te-btn secondary" onclick="resetAllVars()">↺ Reset All</button>';
+  html += '</div>';
+  themeGroups.forEach((group, gi) => {
+    const chevClass = group.open ? '' : ' collapsed';
+    const bodyClass = group.open ? '' : ' collapsed';
+    html += `<div class="te-section">`;
+    html += `<div class="te-section-hdr" onclick="toggleSection(${gi})">`;
+    html += `<span class="chevron${chevClass}" id="chev-${gi}">▾</span>`;
+    html += `<span>${group.name}</span>`;
+    html += `</div>`;
+    html += `<div class="te-section-body${bodyClass}" id="sec-${gi}">`;
+    group.vars.forEach(([cssVar, label]) => {
+      const raw = style.getPropertyValue(cssVar).trim();
+      const hex6 = toHex6(raw);
+      const displayHex = raw.startsWith('#') ? raw : hex6;
+      html += `<div class="te-row">`;
+      html += `<span class="te-label" title="${cssVar}">${label}</span>`;
+      html += `<input type="color" class="te-color-input" value="${hex6}" data-var="${cssVar}" onchange="onPickerChange(this)" oninput="onPickerChange(this)">`;
+      html += `<input type="text" class="te-hex" value="${displayHex}" data-var="${cssVar}" onchange="onHexChange(this)" onkeyup="onHexChange(this)">`;
+      html += `<span class="te-reset" title="Reset to default" onclick="resetVar('${cssVar}', this)">↺</span>`;
+      html += `</div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleSection(idx) {
+  const body = document.getElementById('sec-' + idx);
+  const chev = document.getElementById('chev-' + idx);
+  body.classList.toggle('collapsed');
+  chev.classList.toggle('collapsed');
+}
+
+function onPickerChange(el) {
+  const cssVar = el.dataset.var;
+  const val = el.value;
+  document.documentElement.style.setProperty(cssVar, val);
+  // Update sibling hex input
+  const hexInput = el.parentElement.querySelector('.te-hex');
+  if (hexInput) hexInput.value = val;
+}
+
+function onHexChange(el) {
+  const cssVar = el.dataset.var;
+  const val = el.value.trim();
+  // Accept #rgb, #rrggbb, #rrggbbaa
+  if (/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(val)) {
+    document.documentElement.style.setProperty(cssVar, val);
+    // Update sibling color picker (strip alpha for it)
+    const picker = el.parentElement.querySelector('.te-color-input');
+    if (picker) picker.value = toHex6(val);
+  }
+}
+
+function resetVar(cssVar, el) {
+  const def = defaultValues[cssVar];
+  if (!def) return;
+  document.documentElement.style.setProperty(cssVar, def);
+  const row = el.parentElement;
+  const picker = row.querySelector('.te-color-input');
+  const hex = row.querySelector('.te-hex');
+  if (picker) picker.value = toHex6(def);
+  if (hex) hex.value = def.startsWith('#') ? def : toHex6(def);
+}
+
+function resetAllVars() {
+  for (const [cssVar, val] of Object.entries(defaultValues)) {
+    document.documentElement.style.setProperty(cssVar, val);
+  }
+  refreshThemeEditorUI();
+}
+
+function refreshThemeEditorUI() {
+  const style = getComputedStyle(document.documentElement);
+  document.querySelectorAll('.te-row').forEach(row => {
+    const picker = row.querySelector('.te-color-input');
+    const hex = row.querySelector('.te-hex');
+    if (!picker || !hex) return;
+    const cssVar = picker.dataset.var;
+    const raw = style.getPropertyValue(cssVar).trim();
+    picker.value = toHex6(raw);
+    hex.value = raw.startsWith('#') ? raw : toHex6(raw);
+  });
+}
+
+// String-aware JSONC comment stripper — won't mangle // inside strings
+function stripJsoncComments(text) {
+  let result = '';
+  let i = 0;
+  while (i < text.length) {
+    // String literal — pass through including escapes
+    if (text[i] === '"') {
+      let j = i + 1;
+      while (j < text.length && text[j] !== '"') {
+        if (text[j] === '\\') j++; // skip escaped char
+        j++;
+      }
+      result += text.slice(i, j + 1);
+      i = j + 1;
+    }
+    // Line comment
+    else if (text[i] === '/' && text[i + 1] === '/') {
+      while (i < text.length && text[i] !== '\n') i++;
+    }
+    // Block comment
+    else if (text[i] === '/' && text[i + 1] === '*') {
+      i += 2;
+      while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
+      i += 2;
+    }
+    // Trailing commas before } or ] — strip them for lenient parsing
+    else if (text[i] === ',') {
+      let k = i + 1;
+      while (k < text.length && /\s/.test(text[k])) k++;
+      if (text[k] === '}' || text[k] === ']') { i++; continue; }
+      result += text[i++];
+    }
+    else {
+      result += text[i++];
+    }
+  }
+  return result;
+}
+
+function handleThemeUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const theme = JSON.parse(stripJsoncComments(e.target.result));
+      applyThemeJSON(theme);
+    } catch (err) {
+      console.error('Failed to parse theme JSON:', err);
+      alert('Could not parse theme file. Make sure it\'s a valid VSCode color-theme.json.');
+    }
+  };
+  reader.readAsText(file);
+  // Reset so the same file can be re-uploaded
+  input.value = '';
+}
+
+function applyThemeJSON(theme) {
+  const root = document.documentElement;
+
+  // Build reverse map: VSCode key → CSS var
+  const reverseWorkbench = {};
+  for (const [cssVar, vsKey] of Object.entries(workbenchColorMap)) {
+    reverseWorkbench[vsKey] = cssVar;
+  }
+
+  // Build reverse map: TextMate scope → CSS var (first match wins)
+  const reverseScope = {};
+  for (const [cssVar, info] of Object.entries(tokenScopeMap)) {
+    info.scope.forEach(s => {
+      if (!reverseScope[s]) reverseScope[s] = cssVar;
+    });
+  }
+
+  let applied = 0;
+
+  // Apply workbench colors
+  if (theme.colors) {
+    for (const [vsKey, val] of Object.entries(theme.colors)) {
+      const cssVar = reverseWorkbench[vsKey];
+      if (cssVar && val) {
+        root.style.setProperty(cssVar, val);
+        applied++;
+      }
+    }
+  }
+
+  // Apply token colors
+  if (theme.tokenColors) {
+    for (const entry of theme.tokenColors) {
+      const fg = entry.settings?.foreground;
+      if (!fg) continue;
+
+      // Global default (no scope)
+      if (!entry.scope) {
+        root.style.setProperty('--token-foreground', fg);
+        applied++;
+        continue;
+      }
+
+      // Normalize scope to array
+      const scopes = Array.isArray(entry.scope)
+        ? entry.scope
+        : entry.scope.split(',').map(s => s.trim());
+
+      // Track which CSS vars we've already set from this entry
+      const alreadySet = new Set();
+      for (const scope of scopes) {
+        const cssVar = reverseScope[scope];
+        if (cssVar && !alreadySet.has(cssVar)) {
+          root.style.setProperty(cssVar, fg);
+          alreadySet.add(cssVar);
+          applied++;
+        }
+      }
+    }
+  }
+
+  // Apply semanticTokenColors if present
+  if (theme.semanticTokenColors) {
+    const semMap = {
+      newOperator: '--token-control',
+      stringLiteral: '--token-string',
+      numberLiteral: '--token-number',
+    };
+    for (const [semKey, val] of Object.entries(theme.semanticTokenColors)) {
+      const cssVar = semMap[semKey];
+      const color = typeof val === 'string' ? val : val?.foreground;
+      if (cssVar && color) {
+        root.style.setProperty(cssVar, color);
+        applied++;
+      }
+    }
+  }
+
+  console.log(`Theme applied: ${applied} properties set`);
+
+  // Refresh all picker/hex inputs
+  refreshThemeEditorUI();
+}
+
+renderTree();renderTabs();renderEditor(activeFile);
+</script>
+</body>
+</html>
